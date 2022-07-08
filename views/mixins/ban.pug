@@ -1,0 +1,45 @@
+include ./post.pug
+mixin ban(ban, banpage)
+	tr
+		td
+			if !banpage || (ban.appeal == null && ban.allowAppeal === true)
+				input.post-check(type='checkbox', name='checkedbans' value=ban._id)
+		td
+			if ban.board
+				a(href=`/${ban.board}/`) /#{ban.board}/
+			else
+				| Global
+		td= ban.reason
+		- const ip = permLevel > ipHashPermLevel ? ban.ip.single.slice(-10) : ban.ip.raw;
+		td #{ip}
+		td #{ban.type}
+		td #{ban.issuer}
+		- const banDate = new Date(ban.date);
+		td: time.right.reltime(datetime=banDate.toISOString()) #{banDate.toLocaleString(undefined, {hour12:false})}
+		- const expireDate = new Date(ban.expireAt);
+		td: time.right.reltime(datetime=expireDate.toISOString()) #{expireDate.toLocaleString(undefined, {hour12:false})}
+		td.banposts
+			if ban.posts && ban.posts.length > 0
+				| Hover to view
+				.thread
+					each p in ban.posts
+						+post(p, false, false, false, true)
+			else
+				Posts not shown
+		td
+			if ban.seen
+				| &#10003;
+			else 
+				| &#10799;
+		td
+			if ban.allowAppeal
+				| &#10003;
+			else 
+				| &#10799;
+		td
+			if ban.appeal
+				textarea(rows=1 disabled='true') #{ban.appeal}
+			else if ban.allowAppeal
+				| No appeal submitted
+			else 
+				| -

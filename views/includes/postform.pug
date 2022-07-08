@@ -1,0 +1,74 @@
+- const isThread = thread != null;
+- const subjectRequired = (!isThread && board.settings.forceThreadSubject);
+- const messageRequired = (!isThread && board.settings.forceThreadMessage) || (isThread && board.settings.forceReplyMessage);
+- const fileRequired = (!isThread && board.settings.forceThreadFile) || (isThread && board.settings.forceReplyFile);
+section.form-wrapper.flex-center
+	form.form-post#postform(action=`/forms/board/${board._id}/${modview ? 'mod' : ''}post`, enctype='multipart/form-data', method='POST')
+		if modview
+			input(type='hidden' name='_csrf' value=csrf)
+		input(type='hidden' name='thread' value=isThread ? thread.postId : null)
+		section.row.jsonly
+			.noselect#dragHandle New Post
+		if board.settings.forceAnon && !modview
+			section.row
+				.label Sage
+				label.postform-style.ph-5
+					input(type='checkbox', name='email', value='sage')
+				a.close.postform-style(href='#!') X
+			include ./subjectfield.pug
+		else
+			section.row
+				.label Name
+				input.mr-1(type='text', name='name', placeholder=board.settings.defaultName maxlength=globalLimits.fieldLength.name)
+				a.close.postform-style(href='#!') X
+			if board.settings.sageOnlyEmail
+				section.row
+					.label Sage
+					label.postform-style.ph-5
+						input(type='checkbox', name='email', value='sage')
+			else	
+				section.row
+					.label Email
+					input(type='text', name='email', autocomplete='off' maxlength=globalLimits.fieldLength.email)
+			include ./subjectfield.pug
+		section.row
+			.label
+				span Message
+					if messageRequired
+						span.required *
+			- const minLength = (isThread ? board.settings.minReplyMessageLength : board.settings.minThreadMessageLength) || 0;
+			- const maxLength = Math.min((isThread ? board.settings.maxReplyMessageLength : board.settings.maxThreadMessageLength), globalLimits.fieldLength.message) || globalLimits.fieldLength.message;
+			textarea#message(name='message', rows='5', autocomplete='off' minlength=minLength maxlength=maxLength required=messageRequired)
+		if board.settings.maxFiles > 0
+			- const maxFiles = board.settings.maxFiles;
+			section.row
+				.label
+					span File#{maxFiles > 1 ? 's' : ''}
+						if fileRequired
+							span.required *
+					|
+					| 
+					if maxFiles > 1
+						small Max #{maxFiles} files
+					small #{postFilesSize} total
+				span.col
+					include ./filelabel.pug
+					input#file(type='file', name='file' multiple required=fileRequired )
+					.upload-list
+				if board.settings.userPostSpoiler
+					label.postform-style.ph-5.ml-1.fh
+						input(type='checkbox', name='spoiler', value='true')
+						| Spoiler
+		if board.settings.userPostSpoiler || board.settings.userPostDelete || board.settings.userPostUnlink || modview
+			section.row
+				.label Password
+				input(type='password', name='postpassword', placeholder='password to delete/spoiler/unlink later' maxlength='50')
+		if ((board.settings.captchaMode === 1 && !isThread) || board.settings.captchaMode === 2) && !modview
+			section.row
+				.label
+					span Captcha
+						span.required *
+				.col
+					include ./captcha.pug
+		input#submitpost(type='submit', value=`New ${isThread ? 'Reply' : 'Thread'}`)
+	a.toggle-summary.no-decoration(href='#postform') [New Post]

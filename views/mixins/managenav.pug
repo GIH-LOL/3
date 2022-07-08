@@ -1,0 +1,22 @@
+mixin managenav(selected, upLevel)
+	nav.pages
+		if selected === 'index'
+			include ../includes/boardpages.pug
+			|  
+		else
+			a(href=`${upLevel ? '../' : ''}index.html` class=(selected === 'index' ? 'bold' : '')) [Mod Index]
+			|  
+		a(href=`${upLevel ? '../' : ''}catalog.html` class=(selected === 'catalog' ? 'bold' : '')) [Mod Catalog]
+		|  
+		a(href=`${upLevel ? '../' : ''}recent.html` class=(selected === 'recent' ? 'bold' : '')) [Recent]
+		|  
+		a(href=`${upLevel ? '../' : ''}reports.html` class=(selected === 'reports' ? 'bold' : '')) [Reports]
+		|  
+		a(href=`${upLevel ? '../' : ''}bans.html` class=(selected === 'bans' ? 'bold' : '')) [Bans]
+		|  
+		a(href=`${upLevel ? '../' : ''}logs.html` class=(selected === 'logs' ? 'bold' : '')) [Logs]
+		|  
+		if permLevel < 3
+			a(href=`${upLevel ? '../' : ''}settings.html` class=(selected === 'settings' ? 'bold' : '')) [Settings]
+			|  
+			a(href=`${upLevel ? '../' : ''}banners.html` class=(selected === 'banners' ? 'bold' : '')) [Banners]

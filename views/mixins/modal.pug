@@ -1,0 +1,118 @@
+mixin modal(data)
+	.modal-bg(style=data.hidden?'display:none':'')
+	.modal(id=(data.settings ? 'settingsmodal' : '') style=data.hidden?'display:none':'')
+		.row
+			p.bold #{data.title}
+			a.close.postform-style#modalclose X
+		if data.message || data.messages || data.error || data.errors
+			.row
+				ul.nomarks
+					if data.message
+						li #{data.message}
+					if data.error
+						li #{data.error}
+					if data.messages
+						each msg in data.messages
+							li #{msg}
+					if data.errors
+						each error in data.errors
+							li #{error}
+		if data.frame
+			.row
+				iframe.bypass#modalframe(src=data.frame frameborder='0' scrolling='no')
+		else if data.link
+			.row
+				a.button.mv-0(href=data.link.href target='_blank') #{data.link.text}
+		else if data.redirect && data.title === 'Success'
+			.row
+				a.button.mv-0(href=data.redirect) OK
+		else if data.settings
+			.row
+				.form-wrapper.flexleft.mt-10
+					.row.wrap.sb
+						.col.mr-5
+							.row
+								label.postform-style.ph-5
+									input#live-setting(type='checkbox')
+								.rlabel Live posts
+							.row
+								label.postform-style.ph-5
+									input#notification-setting(type='checkbox')
+								.rlabel Notifications
+							.row
+								label.postform-style.ph-5
+									input#scroll-setting(type='checkbox')
+								.rlabel Scroll to new posts
+							.row
+								label.postform-style.ph-5
+									input#localtime-setting(type='checkbox')
+								.rlabel Local time
+							.row
+								label.postform-style.ph-5
+									input#24hour-setting(type='checkbox')
+								.rlabel 24h time
+							.row
+								label.postform-style.ph-5
+									input#relative-setting(type='checkbox')
+								.rlabel Show relative time
+							.row
+								label.postform-style.ph-5
+									input#noncolorids-setting(type='checkbox')
+								.rlabel Non-color IDs
+
+						.col
+
+							.row
+								label.postform-style.ph-5
+									input#hideimages-setting(type='checkbox')
+								.rlabel Hide thumbnails
+							.row
+								label.postform-style.ph-5
+									input#hiderecursive-setting(type='checkbox')
+								.rlabel Recursive Post Hide
+							.row
+								label.postform-style.ph-5
+									input#loop-setting(type='checkbox')
+								.rlabel Loop audio/video
+							.row
+								label.postform-style.ph-5
+									input#heightlimit-setting(type='checkbox')
+								.rlabel Unlimit expand height
+							.row
+								label.postform-style.ph-5
+									input#crispimages-setting(type='checkbox')
+								.rlabel Crisp image rendering
+							.row
+								label.postform-style.ph-5
+									input#imageloadingbars-setting(type='checkbox')
+								.rlabel Image loading bars
+							.row
+								label.postform-style.ph-5
+									input#alwaysshowspoilers-setting(type='checkbox')
+								.rlabel Always reveal spoilers
+
+					.row
+						.label Video/Audio Volume
+						label.postform-style.ph-5
+							input#volume-setting(type='range' min='0' max='100')
+					.row
+						.label Post Password
+						input#postpassword-setting(type='password' name='postpassword')
+					.row
+						.label Default Name
+						input#name-setting(type='text' name='name')
+					.row
+						.label Theme
+						select#theme-setting
+							option(value='default') default
+							each theme in data.settings.themes
+								option(value=theme) #{theme}
+					.row
+						.label Code theme
+						select#codetheme-setting
+							option(value='default') default
+							each theme in data.settings.codeThemes
+								option(value=theme) #{theme}
+					.row
+						.label Custom CSS
+						textarea#customcss-setting(rows=7)
